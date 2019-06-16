@@ -124,11 +124,11 @@ def setGoal(vt):
 	
     '''
     # Calculate the length of the remaining edges.
-    d = vr.Distance(vq)
-    e = vr.Distance(vt)
-    f = vr.Distance(vp) # always vr.Y-50?
-    g = vp.Distance(vt)
-
+    d = distance(vr, vq)
+    e = distance(vr, vt)
+    f = distance(vr, vp)
+    g = distance(vp, vt)
+    
     # Calculate the inner angles of the triangles using the law of cos.
     aa = sss(b, a, d)
     bb = sss(c, d, e)
@@ -139,20 +139,18 @@ def setGoal(vt):
 
     # Transform inner angles to servo angles. The zero angle of each servo
     # makes the leg stick directly outwards from the chassis.
-    femPos := 90 - (aa + bb + cc)
-    tibPos := 180 - hh
-    tarPos := 180 - (dd + ee)
+    femPos = 90 - (aa + bb + cc)
+    tibPos = 180 - hh
+    tarPos = 180 - (dd + ee)
 
     # Crash if any of the angles are invalid.
     #TODO catch errors
 
     #move the servos
-    servos.moveTo(leg.Coxa, coxPos)
-    servos.moveTo(leg.Femur, femPos)
-    servos.moveTo(leg.Tibia, tibPos)
-    servos.moveTo(leg.Tarsus, tarPos+tarsusExtraAngle)
-
-    return nil
+    servo.moveTo(self.coxa, coxaAngle)
+    servo.moveTo(self.femur, femurAngle)
+    servos.moveTo(self.tibia, tibiaAngle)
+    servos.moveTo(self.tarsus, tarsusAngle)
 
 
     def setLed(self, status):
