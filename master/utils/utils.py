@@ -92,6 +92,70 @@ def makeVector3(x,y,z):
     return v
 
 
+class Matrix44():
+
+    def __init__(self):
+        self.m11 = 0
+        self.m12 = 0
+        self.m13 = 0
+        self.m14 = 0
+        self.m21 = 0
+        self.m22 = 0
+        self.m23 = 0
+        self.m24 = 0
+        self.m31 = 0
+        self.m32 = 0
+        self.m33 = 0
+        self.m34 = 0
+        self.m41 = 0
+        self.m42 = 0
+        self.m43 = 0
+        self.m44 = 0
+
+
+    def setRotation(self, ea):
+	
+        # precompute
+	cy := math.cos(ea.Heading)
+	sy := math.sin(ea.Heading)
+	cx := math.cos(ea.Pitch)
+	sx := math.sin(ea.Pitch)
+	cz := math.cos(ea.Bank)
+	sz := math.sin(ea.Bank)
+
+	# perform intense snafucation
+	self.m11 = cy * cz
+	self.m21 = -cy * sz
+	self.m31 = sy
+	self.m14 = 0
+	self.m12 = (cx * sz) + ((sx * cz) * sy)
+	self.m22 = (cx * cz) - ((sx * sz) * sy)
+	self.m32 = -sx * cy
+	self.m24 = 0
+	self.m13 = (sx * sz) - ((cx * cz) * sy)
+	self.m23 = (sx * cz) + ((cx * sz) * sy)
+	self.m33 = cx * cy
+	self.m34 = 0
+	self.m41 = 0
+	self.m42 = 0
+	self.m43 = 0
+	self.m44 = 1
+
+
+
+    def setTranslation(self, v):
+	self.m41 = v.X
+	self.m42 = v.Y
+	self.m43 = v.Z
+
+
+def makeMatrix44(v, ea):
+    m = Matrix44()
+    m.setRotation(ea)
+    m.setTranslation(v)
+    return m
+
+
 
 #Util Functions
 def degree(rads):
