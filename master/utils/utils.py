@@ -15,26 +15,28 @@ import math
 '''
 class Euler:
 
-    def __init__(self, heading=0, pitch=0, bank=0):
-        self.heading = heading
+    def __init__(self, roll=0, pitch=0, yaw=0):
+        self.roll = roll
         self.pitch = pitch
-        self.bank = bank
+        self.yaw = yaw
 
     def toString(self):
-        print("heading: " + self.heading)
-        print("pitch: " + self.pitch)
-        print("bank: " + self.bank)
+        print(' ')
+        print("roll: " + str(self.roll))
+        print("pitch: " + str(self.pitch))
+        print("yaw: " + str(self.yaw))
+        print(' ')
 
 #constructor
 def makeSingularEulerAngle(rotation, angle):
     ea = Euler()
 
     if (rotation == 0):
-        ea.heading = angle
+        ea.roll = angle
     elif (rotation == 1):
         ea.pitch = angle
     elif (rotation == 2):
-        ea.bank = angle
+        ea.yaw = angle
 
     return ea
 
@@ -51,6 +53,7 @@ class Vector3:
         self.z = z
 
     def add(self, vv):
+
         result = Vector3()
 
         result.x = self.x + vv.x
@@ -59,7 +62,7 @@ class Vector3:
 
         return result
 
-    def subtract(self. vv):
+    def subtract(self, vv):
         result = Vector3()
 
         result.x = self.x - vv.x
@@ -77,14 +80,41 @@ class Vector3:
 
         return result
 
-    def toString(self):
-        print("X: " + self.x)
-        print("Y: " + self.y)
-        print("Z: " + self.z)
+    def distance(self, vv):
+        result = Vector3()
 
-    #TODO Distance()
-    #TODO Magnitude()
-    #TODO MultMatrix44()
+        result.x = math.sqrt((self.x - vv.x)**2)
+        result.y = math.sqrt((self.y - vv.y)**2)
+        result.z = math.sqrt((self.z - vv.z)**2)
+
+        return result
+
+    def unit(self):
+        result = Vector3()
+        m = self.magnitude()
+        if (m != 0):
+            result.x = self.x / m
+            result.y = self.y / m
+            result.z = self.z / m
+        return result
+
+
+    def magnitude(self):
+        return math.sqrt((self.x*self.x) + (self.y * self.y) + (self.z * self.z))
+    
+    def multiplyMatrix44(self, m):
+        result = Vector3()
+
+        result.x = (self.x * m.m11) + (self.y * m.m21) + (self.z * m.m31) + m.m41
+        result.y = (self.x * m.m12) + (self.y * m.m22) + (self.z * m.m32) + m.m42
+        result.z = (self.x * m.m13) + (self.y * m.m23) + (self.z * m.m33) + m.m43
+
+        return result
+
+    def toString(self):
+        print("X: " + str(self.x))
+        print("Y: " + str(self.y))
+        print("Z: " + str(self.z))
 
 #constructor
 def makeVector3(x,y,z):
@@ -116,12 +146,12 @@ class Matrix44():
     def setRotation(self, ea):
 	
         # precompute
-	cy := math.cos(ea.Heading)
-	sy := math.sin(ea.Heading)
-	cx := math.cos(ea.Pitch)
-	sx := math.sin(ea.Pitch)
-	cz := math.cos(ea.Bank)
-	sz := math.sin(ea.Bank)
+	cy = math.cos(ea.Heading)
+	sy = math.sin(ea.Heading)
+	cx = math.cos(ea.Pitch)
+	sx = math.sin(ea.Pitch)
+	cz = math.cos(ea.Bank)
+	sz = math.sin(ea.Bank)
 
 	# perform intense snafucation
 	self.m11 = cy * cz
