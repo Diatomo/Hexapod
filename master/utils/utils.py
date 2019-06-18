@@ -146,12 +146,12 @@ class Matrix44():
     def setRotation(self, ea):
 	
         # precompute
-	cy = math.cos(ea.Heading)
-	sy = math.sin(ea.Heading)
-	cx = math.cos(ea.Pitch)
-	sx = math.sin(ea.Pitch)
-	cz = math.cos(ea.Bank)
-	sz = math.sin(ea.Bank)
+	cy = math.cos(ea.roll)
+	sy = math.sin(ea.roll)
+	cx = math.cos(ea.pitch)
+	sx = math.sin(ea.pitch)
+	cz = math.cos(ea.yaw)
+	sz = math.sin(ea.yaw)
 
 	# perform intense snafucation
 	self.m11 = cy * cz
@@ -171,12 +171,19 @@ class Matrix44():
 	self.m43 = 0
 	self.m44 = 1
 
-
-
     def setTranslation(self, v):
-	self.m41 = v.X
-	self.m42 = v.Y
-	self.m43 = v.Z
+	self.m41 = v.x
+	self.m42 = v.y
+	self.m43 = v.z
+
+    def toString(self):
+        print('')
+        print(str(self.m11) + ' ' + str(self.m12) + ' ' + str(self.m13) + ' ' + str(self.m14))
+        print(str(self.m21) + ' ' + str(self.m22) + ' ' + str(self.m23) + ' ' + str(self.m24))
+        print(str(self.m31) + ' ' + str(self.m32) + ' ' + str(self.m33) + ' ' + str(self.m34))
+        print(str(self.m41) + ' ' + str(self.m42) + ' ' + str(self.m43) + ' ' + str(self.m44))
+        print('')
+
 
 
 def makeMatrix44(v, ea):

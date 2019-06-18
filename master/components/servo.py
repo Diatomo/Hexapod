@@ -1,7 +1,7 @@
 
 from sys import path
 
-path.append("../../venv/lib/python3.6/site-packages/ax12")
+path.append("../dynamixel/ax12")
 from ax12 import Ax12 #TODO update to python3
 s = Ax12()
 
