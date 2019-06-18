@@ -1,3 +1,3 @@
 # Hexapod
-Code driving gohma, the hexapod.
+Code driving Gohma, the hexapod.
 
