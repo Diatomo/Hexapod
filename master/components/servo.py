@@ -23,6 +23,13 @@ class Servo:
         self.slowSpeed = 512
         self.fastSpeed = 1023
 
+        #constants
+        self.maxPos = 1023.0
+        self.maxAngle = 300.0
+        self.zeroAngle = 150.0
+        self.positionToAngle = self.maxAngle / maxPos
+        self.angleToPosition = 1.0 / self.positionToAngle
+
     #startup (may not be needed)
     def startup(self):
         try:
@@ -68,3 +75,19 @@ class Servo:
     def getMovingStatus(self):
         return s.readMovingStatus(self.id)
 
+    '''
+        angle conversion
+    '''
+    def posToAngle(self, pos):
+        return (self.positionToAngle * pos) - self.zeroAngle
+
+    def angleToPos(self, angle):
+        return (s.zeroAngle + angle) * self.angleToPosition
+
+    def normalizeAngle(d):
+        if (d > 180):
+            return normalizeAngle(d - 360)
+        elif (d < -180):
+            return normalizeAngle(d + 360)
+        else:
+            return d

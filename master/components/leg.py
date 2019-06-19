@@ -1,6 +1,8 @@
 
+from sys import path
+path.append('../utils/')
+from utils import *
 from servo import Servo
-import time
 
 
 coxaOffsetY = -12.0
@@ -14,12 +16,20 @@ tarsusLength = 80.5
 class Leg:
 
     #TODO give these servos Identifications
-    def __init__(self, baseId):
+    def __init__(self, baseId, name, origin, angle):
+
+        self.name = name
+        self.origin = origin
+        self.angle = angle
+        
+
+        #joints in each leg
+        numJoints = 4
         self.coxa = Servo(baseId * numJoints + 1)
         self.femur = Servo(baseId * numJoints + 2)
         self.tibia = Servo(baseId * numJoints + 3)
         self.tarsus = Servo(baseId * numJoints + 4)
-        self.joints = [self.coxa, self.femur, self.tibia, self.tarsus]
+
 
 # PresentPosition returns the actual present posion (relative to the center of
 # the hexapod) of the end of this leg. This involves reading the position of
@@ -63,7 +73,7 @@ def setGoal(vt):
 	 not be parallel to the actual ground. Fortunately, the coxa moves around
 	 the Y axis in that space, so we can cheat with 2d trig.
     '''
-    coxAngle = utils.degree(math.atan2(vt.X-leg.Origin.X, vt.Z-leg.Origin.Z)) - leg.Angle
+    coxaAngle = utils.degree(math.atan2(vt.X-leg.Origin.X, vt.Z-leg.Origin.Z)) - leg.Angle
     '''
 	 The other joints are all on the same plane, which we know intersects vt
 	 from the above. So the rest of the function can use 2d trig on the (z,y)
@@ -139,9 +149,9 @@ def setGoal(vt):
 
     # Transform inner angles to servo angles. The zero angle of each servo
     # makes the leg stick directly outwards from the chassis.
-    femPos = 90 - (aa + bb + cc)
-    tibPos = 180 - hh
-    tarPos = 180 - (dd + ee)
+    femurAngle = 90 - (aa + bb + cc)
+    tibiaAngle = 180 - hh
+    tarsusAngle = 180 - (dd + ee)
 
     # Crash if any of the angles are invalid.
     #TODO catch errors
