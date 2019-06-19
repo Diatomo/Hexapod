@@ -138,12 +138,38 @@ class Hexapod:
         v.y = 0.0
         return v
 
+    '''
+        Helper Functions
+            Routine mathematical protocols
+    '''
     def distanceFromHome(self):
         td = 0.0
 
         for key, leg in self.legs:
             pv = leg.presentPosition()
             td += pv.distance(self.legs.feet[key]) #TODO check index syntax
+    
+    def setState(self, s):
+        self.stateCounter = 0
+        self.stateTime = time.time()
+        self.state = s
+
+    def clamp(self, minimum, maximum, v):
+        if (v < minimum):
+            return minimum
+        elif (v > maximum):
+            return maximum
+        return v
+
+    def diffPoseY(self):
+        return (self.legs.target.pos.y - self.pos.legs.lastPose.pos.y)
+
+   def diffRoll(self):
+       return (self.legs.target.roll - self.pose.roll)
+
+    def waitForReady(self):
+        pass
+
 
     '''
         boot functions
@@ -151,14 +177,13 @@ class Hexapod:
             sets torque limit
     '''
     def bootSlow(self):
-        for (key, leg in self.legs):
+        for (_, leg in self.legs):
             for (servo in leg):
                 servo.setMovingSpeed(self.moveSpeedSlow)
                 servo.setTorqueLimit(self.torqueLimitSlow)
 
-
     def bootFast(self):
-        for (key, leg in self.legs):
+        for (_, leg in self.legs):
             for (servo in leg):
                 servo.setMovingSpeed(self.moveSpeedFast)
                 servo.setTorqueLimit(self.torqueLimitFast)
@@ -171,7 +196,59 @@ class Hexapod:
         self.state = "standup"
 
     def standup(self):
+        yOffset = self.diffRoll()
+        if (math.abs(yOffset) < 1):
+            self.state = "stepping"
 
+    def sitDown(self):
+        yOffset = self.diffPoseY()
+        if (math.abs(yOffset) < 1):
+            self.ready = False
+
+    def stepping(self):
+
+        if (stateCounter == 1):
+            self.legs.lastPose = self.pose
+            for key, foot in self.legs.feet: #TODO check iteration
+                legs.lastFeet[key] = legs.feet[key]
+
+            xzPosePos = state.Pose.pos
+            xzTargetPos = state.target.pos
+            xzPosePos.y = 0
+            xzTargetPos.y = 0
+
+            vecToGoal = xzTargetPos.subtract(xzPosePos)
+            distToGoal = vecToGoal.magnitude()
+
+            distToStep = min(distToGoal, self.maxStepDistance)
+            if (distToStep < self.minStepDistance and math.abs(self.diffRoll()) < minTurnDistance):
+                    self.legs.target = self.legs.lastPose
+                    if (self.legs.shutdown == True):
+                        self.setState("sitdown")
+                    else:
+                        self.setState("stepping")
+        
+        #TODO generate a gait
+         
+        #TODO calculate the target position for the origin
+
+        #TODO calculate target position for each foot.
+   
+        #TODO move continuously toward target
+
+        #TODO Ignore Y axis
+
+        #TODO check state counter with gait
+        #if so get ready for next cycle
+
+        #TODO error checking
+
+        #endif
+
+        #TODO adjust clearence.
+        #for y, x and z axis.
+
+        #TODO update the goal of each leg
 
     def tick(self, cTime):
         if (self.state == "default"):
@@ -179,25 +256,10 @@ class Hexapod:
         elif (self.state == "standup"):
             self.standup()
         elif (self.state == "sitDown"):
-            pass#TODO
+            self.sitDown()
         elif (self.state == "stepping"):
             pass#TODO
 
-    def waitForReady(self):
-        pass
-
-    def clamp(self, minimum, maximum, v):
-        if (v < minimum):
-            return minimum
-        elif (v > maximum):
-            return maximum
-        return v
-
-    def setState(self, s):
-        self.stateCounter = 0
-        self.stateTime = time.time()
-        self.state = s
-    
     def makeGait(self):
         pass
 
