@@ -59,3 +59,8 @@ class Input:
             output['joyRight'][value] = self.line[self.joyRight[value]]
         return output
 
+    #TODO map byte values into directions
+    def direction(self):
+        pass
+
+
