@@ -1,5 +1,10 @@
 
 
+
+'''
+    Prototype script to build out a controller for the hexapod robot
+'''
+
 from input import *
 import pygame
 import math
@@ -10,14 +15,13 @@ black = (0,0,0)
 coral = (255,127,80)
 
 
-
 counter = 0
-incre = 2 * math.pi / 100
+nVALS = 100
+incre = (2 * math.pi) / nVALS
 rotRange = []
-for i in range(100):
+for i in range(nVALS):
     rotRange.append(counter)
     counter += incre
-
 
 
 class inputGUI:
@@ -31,13 +35,21 @@ class inputGUI:
         self.bb = Circle(self.screen, self.center, self.center, 100, 5)
         self.rot = Circle(self.screen, self.apos, self.center, 10, 0, coral)
         self.cursor = Circle(self.screen, self.center, self.center, 5)
-
+        self.controller = Input() 
+    
+    def pollInput(self):
+        pass
+    
+    
+    
     def loop(self):
-        currTime = time.time()
-        alarm = 5
+        prevTime = time.time()
+        alarm = 0.1
         counter = 0
         while True:
-            event = pygame.event.wait()
+
+            self.controller.poll()
+            event = pygame.event.poll()
             if (event.type == pygame.QUIT):
                 pygame.quit()
 
@@ -47,12 +59,9 @@ class inputGUI:
             #draw sprites
             self.bb.draw()
             self.cursor.draw()
-            if (time.time() - currTime >= alarm):
-                print("executed")
-                self.rot.outskirt(rotRange[counter])
-                counter += 1
-                counter = counter % 100
-                currTime = time.time()
+            if (time.time() - prevTime > alarm):
+                self.rot.outskirt(incre)
+                prevTime = time.time()
             self.rot.draw()
 
             #update screen
@@ -76,8 +85,6 @@ class Circle:
 
     def draw(self):
         pygame.draw.circle(self.surface, self.color, self.pos, self.radius, self.width)
-
-
 
 
 x = inputGUI()
