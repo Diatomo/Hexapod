@@ -163,9 +163,9 @@ def setGoal(vt):
     servos.moveTo(self.tarsus, tarsusAngle)
 
 
-    def setLed(self, status):
-        for joint in joints:
-            joint.setLed(status)
+def setLed(self, status):
+    for joint in joints:
+        joint.setLed(status)
 
 
 # sss returns the angle α, given the length of sides a, b, and c.
